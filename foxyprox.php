@@ -38,8 +38,7 @@ function foxyprox_MetaData()
         'DisplayName' => 'FoxyProx',
         'APIVersion' => '1.1', // Use API Version 1.1
         'RequiresServer' => true, // Set true if module requires a server to work
-        'DefaultNonSSLPort' => '1111', // Default Non-SSL Connection Port
-        'DefaultSSLPort' => '1112', // Default SSL Connection Port
+        'DefaultSSLPort' => '8006', // Default SSL Connection Port
         'ServiceSingleSignOnLabel' => 'Login to Panel as User',
         'AdminSingleSignOnLabel' => 'Login to Panel as Admin',
     );
@@ -69,7 +68,7 @@ function foxyprox_MetaData()
 function foxyprox_ConfigOptions()
 {
     return array(
-        // a text field type allows for single line text input
+        /*// a text field type allows for single line text input
         'Text Field' => array(
             'Type' => 'text',
             'Size' => '25',
@@ -110,7 +109,7 @@ function foxyprox_ConfigOptions()
             'Rows' => '3',
             'Cols' => '60',
             'Description' => 'Freeform multi-line text input field',
-        ),
+        ),*/
     );
 }
 
@@ -133,6 +132,7 @@ function foxyprox_ConfigOptions()
 function foxyprox_CreateAccount(array $params)
 {
     try {
+		require_once("whatdoestheproxsay.php");
         // Call the service's provisioning function, using the values provided
         // by WHMCS in `$params`.
         //
@@ -149,6 +149,9 @@ function foxyprox_CreateAccount(array $params)
         //     ...
         // )
         // ```
+		$class = new ProxSays;
+		$result = $class->authServer($params['serverusername'], $params['serverpassword'], $params['serverip'], "443");
+		logModuleCall('foxyprox', __FUNCTION__, $params, $result,);
     } catch (Exception $e) {
         // Record the error in WHMCS's module log.
         logModuleCall(
